@@ -1,13 +1,19 @@
 const API_URL = "https://cdn.jsdelivr.net/npm/world-countries@5.1.0/countries.json";
-
+const statu = document.querySelector("#status")
 async function loadCountries() {
-    const res = await fetch(API_URL);
-    res.ok
-    if (res.ok === false){
-        throw new error("no country with that name ")
+    statu.textContent = "loading "
+    try {
+        const res = await fetch(API_URL);
+        
+        if (res.ok === false) {
+            throw new Error("could not laod countries")
+        }
+        const data = await res.json();
+        statu.textContent =`Showing ${data.length} countries`
     }
-    const data = await res.json();
-    console.log(data.length);
+    catch (err) {
+        statu.textContent = "Something went wrong. please try again."
+    }
 }
 
 loadCountries()
