@@ -2,6 +2,7 @@
 const API_URL = "https://cdn.jsdelivr.net/npm/world-countries@5.1.0/countries.json";
 const grid = document.querySelector("#grid")
 const statusEl = document.querySelector("#status")
+const searchInput = document.querySelector("#search")
 let countries = [];
 
 async function loadCountries() {
@@ -41,4 +42,14 @@ function renderCards(list) {
     });
 
 }
+function applyFilters(){
+    const text = searchInput.value.toLowerCase()
+    const result = countries.filter((country) => {
+        return country.name.common.toLowerCase().includes(text)
+    })
+    renderCards(result)
+}
+searchInput.addEventListener("input", applyFilters)
+
+
 loadCountries()
