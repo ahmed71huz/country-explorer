@@ -3,6 +3,8 @@ const API_URL = "https://cdn.jsdelivr.net/npm/world-countries@5.1.0/countries.js
 const grid = document.querySelector("#grid")
 const statusEl = document.querySelector("#status")
 const searchInput = document.querySelector("#search")
+const regionSelect = document.querySelector("#region")
+const sortSelect = document.querySelector("#sort")
 let countries = [];
 
 async function loadCountries() {
@@ -44,12 +46,21 @@ function renderCards(list) {
 }
 function applyFilters(){
     const text = searchInput.value.toLowerCase()
+    const region = regionSelect.value
     const result = countries.filter((country) => {
-        return country.name.common.toLowerCase().includes(text)
+        return country.name.common.toLowerCase().includes(text) &&
+            (region === "" || country.region === region)
     })
-    renderCards(result)
+const sorted = [...result].sort((a, b) => {
+    if (sortSelect.value === "za") {
+        return b.name.common.localeCompare(a.name.common)
+    }
+    return a.name.common.localeCompare(b.name.common)
+})
+    renderCards(sorted)
 }
 searchInput.addEventListener("input", applyFilters)
-
+regionSelect.addEventListener("change", applyFilters)
+sortSelect.addEventListener("change", applyFilters)
 
 loadCountries()
