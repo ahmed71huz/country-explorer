@@ -5,6 +5,7 @@ const statusEl = document.querySelector("#status")
 const searchInput = document.querySelector("#search")
 const regionSelect = document.querySelector("#region")
 const sortSelect = document.querySelector("#sort")
+const details = document.querySelector("#details")
 let countries = [];
 
 async function loadCountries() {
@@ -35,12 +36,21 @@ function renderCards(list) {
         name.textContent = country.name.common
         const p = document.createElement("p")
         p.textContent = `${country.region} - ${country.capital?.[0] || "—"}`
+        card.dataset.code = country.cca3
+        card.addEventListener("click", () => {
+            details.innerHTML = `
+            <h2>${country.name.official}</h2>
+            <p> Region: ${country.region}</p>
+            <p>Area: ${country.area}</p>
+            <p>Languages: ${Object.values(country.languages).join(", ") || "-"}</p>
+            `
+            details.hidden = false
+        })
 
         card.appendChild(img)
         card.appendChild(name)
         card.appendChild(p)
         grid.appendChild(card)
-
     });
 
 }
