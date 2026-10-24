@@ -42,8 +42,14 @@ function renderCards(list) {
             <h2>${country.name.official}</h2>
             <p> Region: ${country.region}</p>
             <p>Area: ${country.area}</p>
-            <p>Languages: ${Object.values(country.languages).join(", ") || "-"}</p>
+            <p>Languages: ${Object.values(country.languages || {}).join(", ") || "-"}</p>
+            <p>Borders: ${(country.borders || []).join(", ") || "-"}</p>
+            <button id="close-details">Close</button>
             `
+            const closeDetails = details.querySelector("#close-details")
+            closeDetails.addEventListener("click", () => {
+                details.hidden = true
+            })
             details.hidden = false
         })
 
