@@ -9,7 +9,7 @@ const details = document.querySelector("#details")
 let countries = [];
 
 async function loadCountries() {
-    statusEl.textContent = "loading "
+    statusEl.textContent = "loading countries "
     try {
         const res = await fetch(API_URL);
 
@@ -32,10 +32,12 @@ function renderCards(list) {
         const card = document.createElement("article")
         const img = document.createElement("img")
         img.src = `https://flagcdn.com/w320/${country.cca2.toLowerCase()}.png`
+        img.alt = `Flag of ${country.name.official}`
         const name = document.createElement("h3")
         name.textContent = country.name.common
         const p = document.createElement("p")
-        p.textContent = `${country.region} - ${country.capital?.[0] || "—"}`
+        p.textContent = `${country.region} - ${country.capital?.[0] || "—"} -
+        ${country.area.toLocaleString()} km²`
         card.dataset.code = country.cca3
         card.addEventListener("click", () => {
             details.innerHTML = `
@@ -71,9 +73,19 @@ const sorted = [...result].sort((a, b) => {
     if (sortSelect.value === "za") {
         return b.name.common.localeCompare(a.name.common)
     }
+    if (sortSelect.value ==="area-desc"){
+        return b.area - a.area
+    }
+    if (sortSelect.value ==="area-asc"){
+        return a.area - b.area
+    }
     return a.name.common.localeCompare(b.name.common)
 })
-    renderCards(sorted)
+renderCards(sorted)
+if(sorted.length === 0){
+    grid.innerHTML ="<p>No countries found</p>"
+}
+    statusEl.textContent = `Showing ${sorted.length} of ${countries.length}`
 }
 searchInput.addEventListener("input", applyFilters)
 regionSelect.addEventListener("change", applyFilters)
