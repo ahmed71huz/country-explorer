@@ -7,14 +7,16 @@ const regionSelect = document.querySelector("#region")
 const sortSelect = document.querySelector("#sort")
 const details = document.querySelector("#details")
 let countries = [];
+const retryBtn = document.querySelector("#retry-btn")
 
 async function loadCountries() {
-    statusEl.textContent = "loading countries "
+    statusEl.textContent = "Loading countries..."
+    retryBtn.hidden = true
     try {
         const res = await fetch(API_URL);
 
         if (res.ok === false) {
-            throw new Error("could not laod countries")
+            throw new Error("could not load countries")
         }
         const data = await res.json();
         countries = data;
@@ -23,6 +25,7 @@ async function loadCountries() {
     }
     catch (err) {
         statusEl.textContent = "Something went wrong. please try again."
+        retryBtn.hidden = false;
     }
 
 }
@@ -41,10 +44,12 @@ function renderCards(list) {
         card.dataset.code = country.cca3
         card.addEventListener("click", () => {
             details.innerHTML = `
+            <img src="https://flagcdn.com/w640/${country.cca2.toLowerCase()}.png" alt="Flag of ${country.name.official}">
             <h2>${country.name.official}</h2>
             <p> Region: ${country.region}</p>
-            <p>Area: ${country.area}</p>
+            <p>Area: ${country.area.toLocaleString()}</p>
             <p>Languages: ${Object.values(country.languages || {}).join(", ") || "-"}</p>
+            <p>Currencies: ${Object.values(country.currencies || {}).map((c) => `${c.name} (${c.symbol})`).join(", ")|| "-"}</p> 
             <p>Borders: ${(country.borders || []).join(", ") || "-"}</p>
             <button id="close-details">Close</button>
             `
@@ -90,5 +95,6 @@ if(sorted.length === 0){
 searchInput.addEventListener("input", applyFilters)
 regionSelect.addEventListener("change", applyFilters)
 sortSelect.addEventListener("change", applyFilters)
+retryBtn.addEventListener("click", loadCountries)
 
 loadCountries()
